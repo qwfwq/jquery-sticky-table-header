@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<meta charset="utf-8" /> 
+<html>
+    <head>
+        <title>Sticky table header demo</title>
+        <link rel="stylesheet" href="css/table.css" />
+        <script type="text/javascript" charset="UTF-8" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" charset="UTF-8" src="scripts/stickyTable.js"></script>
+        <script type="text/javascript" charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script type="text/javascript" charset="UTF-8">
+            // Scope things
+            (function () {
+
+                // Takes one argument to populate our table with so many rows of gibberish
+                // the second argument is so it can recursively remember how many have been created
+                // And create more as is necessary.
+                var getSomeRows = function (totalRows, rowsCreated) {
+                    rowsCreated = rowsCreated || 0;
+
+                    // Populate our table with some hipster gibberish words from hipster ipsum's api
+                    $.getJSON(
+                        'http://hipsterjesus.com/api?paras=1&type=hipster-centric',
+                        function (data) {
+                            // lets strip the "<p>" tag with jQuery and parse the words
+                            var text = $(data.text).html().split(' ');
+
+                            // jQuery selectors
+                            var $tBody = $("#hipsterTBody");
+                            var $tableRowTemplate = $("#tableRowTemplate");
+
+                            // Our underscore template
+                            var _tableRow = _.template($tableRowTemplate.text());
+
+                            // Iterate through our words and add them in groups of four
+                            _.reduce(text, function (rowWords, word) {
+                                // Ignore blanks
+                                if (!word.trim()) {
+                                    return rowWords;
+                                }
+
+                                // keep adding if less then four words we don't care
+                                // about cutting off last 3, lets populate the whole row
+                                if (rowWords.push(word) < 4) {
+                                    return rowWords;
+                                } else {
+
+                                    // Stop when we have enough and use our template to append them to the DOM
+                                    if (rowsCreated < totalRows) {
+                                        // Append our four word row
+                                        $(_tableRow({
+                                            firstWord: rowWords[0],
+                                            secondWord: rowWords[1],
+                                            thirdWord: rowWords[2],
+                                            fourthWord: rowWords[3]
+                                        })).appendTo($tBody);
+
+                                        rowsCreated += 1;
+                                    }
+
+                                    // Start over on next row
+                                    return [];
+                                }
+                            }, []);
+
+                            if (rowsCreated < totalRows) {
+                                getSomeRows(totalRows, rowsCreated);
+                            }
+                        }
+                    );
+                }
+
+                $(document).ready(function() {
+
+                    $("#testTable").stickyTable({height: 200 });
+                });
+
+                getSomeRows(30);
+        })();
+        </script>
+        <script id="tableRowTemplate" type="text/template" charset="UTF-8">
+            <tr>
+                <td><%- firstWord %></td>
+                <td><%- secondWord %></td>
+                <td><%- thirdWord %></td>
+                <td><%- fourthWord %></td>
+            </tr>
+        </script>
+    </head>
+    <body>
+        <table id="testTable">
+            <thead>
+                <tr>
+                    <th>Things</th>
+                    <th>Other things</th>
+                    <th>More things</th>
+                    <th>Stuff</th>
+                </tr>
+            </thead>
+            <tbody id="hipsterTBody">
+            </tbody>
+        </table>
+    </body>
+</html>

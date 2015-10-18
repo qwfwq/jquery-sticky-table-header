@@ -1,0 +1,19 @@
+body {
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+#testTable {
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+#testTable thead {
+  background-color: #000;
+  color: #fff;
+}
+#testTable tbody {
+  overflow-y: scroll;
+}
+#testTable th,
+#testTable td {
+  padding: 10px;
+  text-align: left;
+}
