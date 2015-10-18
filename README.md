@@ -12,4 +12,6 @@ changes are not done until the page is loaded thus making implementation simpler
 
 Along with the small js plugin file in this repro is a small demo.
 
-This approach has not been tested in IE < 10 and as such I would assume it doesn't work in legacy IE browsers. This has been tested in Chrome 46, Firefox 41 and IE 10/11. 
+This plugin has not been tested in IE < 10 and as such I would assume it doesn't work in legacy IE browsers. This has been tested in Chrome 46, Firefox 41 and IE 10/11.
+
+The plugin was developed against jquery-2.1.4.
